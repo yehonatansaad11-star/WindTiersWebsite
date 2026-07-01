@@ -42,11 +42,7 @@ function RankBadge({ rank }) {
   const safeRank = rank || "Unranked";
 
   if (safeRank === "Unranked") {
-    return (
-      <span className="unranked-text">
-        Unranked
-      </span>
-    );
+    return <span className="unranked-text">Unranked</span>;
   }
 
   return (
@@ -56,7 +52,7 @@ function RankBadge({ rank }) {
   );
 }
 
-function Leaderboard({ activeTab, players }) {
+function Leaderboard({ activeTab, players, onSelectPlayer }) {
   const isOverall = activeTab === "Overall";
 
   const sortedPlayers = [...players].sort((a, b) => {
@@ -78,6 +74,8 @@ function Leaderboard({ activeTab, players }) {
               return (
                 <tr
                   key={player.name}
+                  onClick={() => onSelectPlayer(player)}
+                  style={{ cursor: "pointer" }}
                   className={index === 0 ? "row-gold" : index === 1 ? "row-silver" : index === 2 ? "row-bronze" : ""}
                 >
                   <td className="place-cell">
@@ -104,9 +102,9 @@ function Leaderboard({ activeTab, players }) {
                   </td>
 
                   <td className="total-elo">
-  <div className="elo-title">ELO</div>
-  <div>{elo.toLocaleString()}</div>
-</td>
+                    <div className="elo-title">ELO</div>
+                    <div>{elo.toLocaleString()}</div>
+                  </td>
                 </tr>
               );
             })}

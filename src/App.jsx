@@ -4,12 +4,14 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Leaderboard from "./components/Leaderboard";
 import AdminPanel from "./components/AdminPanel";
+import PlayerProfile from "./components/PlayerProfile";
 import { db } from "./firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Overall");
   const [players, setPlayers] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   useEffect(() => {
     const playersRef = collection(db, "players");
@@ -39,7 +41,18 @@ function App() {
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <AdminPanel players={players} />
       <Hero />
-      <Leaderboard activeTab={activeTab} players={players} />
+
+      <Leaderboard
+        activeTab={activeTab}
+        players={players}
+        onSelectPlayer={setSelectedPlayer}
+      />
+
+      <PlayerProfile
+        player={selectedPlayer}
+        players={players}
+        onClose={() => setSelectedPlayer(null)}
+      />
     </main>
   );
 }
