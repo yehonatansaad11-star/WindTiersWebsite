@@ -12,6 +12,7 @@ function App() {
   const [activeTab, setActiveTab] = useState("Overall");
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const playersRef = collection(db, "players");
@@ -23,8 +24,6 @@ function App() {
           id: doc.id,
           ...doc.data(),
         }));
-
-        console.log("PLAYERS FROM FIREBASE:", playersData);
 
         setPlayers(playersData);
       },
@@ -42,9 +41,19 @@ function App() {
       <AdminPanel players={players} />
       <Hero />
 
+      <section className="search-section">
+        <input
+          type="text"
+          placeholder="Search player..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </section>
+
       <Leaderboard
         activeTab={activeTab}
         players={players}
+        searchQuery={searchQuery}
         onSelectPlayer={setSelectedPlayer}
       />
 

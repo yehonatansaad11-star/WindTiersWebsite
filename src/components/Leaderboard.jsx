@@ -28,13 +28,13 @@ const rankPoints = {
 
 function getOverallElo(player) {
   return modes.reduce((total, mode) => {
-    const rank = player.ranks[mode] || "Unranked";
+    const rank = player.ranks?.[mode] || "Unranked";
     return total + (rankPoints[rank] || 0);
   }, 0);
 }
 
 function getModeElo(player, mode) {
-  const rank = player.ranks[mode] || "Unranked";
+  const rank = player.ranks?.[mode] || "Unranked";
   return rankPoints[rank] || 0;
 }
 
@@ -52,10 +52,14 @@ function RankBadge({ rank }) {
   );
 }
 
-function Leaderboard({ activeTab, players, onSelectPlayer }) {
+function Leaderboard({ activeTab, players, searchQuery, onSelectPlayer }) {
   const isOverall = activeTab === "Overall";
 
-  const sortedPlayers = [...players].sort((a, b) => {
+  const filteredPlayers = players.filter((player) =>
+    player.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedPlayers = [...filteredPlayers].sort((a, b) => {
     const eloA = isOverall ? getOverallElo(a) : getModeElo(a, activeTab);
     const eloB = isOverall ? getOverallElo(b) : getModeElo(b, activeTab);
     return eloB - eloA;
@@ -73,7 +77,7 @@ function Leaderboard({ activeTab, players, onSelectPlayer }) {
 
               return (
                 <tr
-                  key={player.name}
+                  key={player.id || player.name}
                   onClick={() => onSelectPlayer(player)}
                   style={{ cursor: "pointer" }}
                   className={index === 0 ? "row-gold" : index === 1 ? "row-silver" : index === 2 ? "row-bronze" : ""}
@@ -83,7 +87,7 @@ function Leaderboard({ activeTab, players, onSelectPlayer }) {
                   </td>
 
                   <td className="player-cell">
-                    <img src={`https://mc-heads.net/avatar/${player.skin}/32`} alt={player.name} />
+                    <img src={`https://mc-heads.net/avatar/${player.skin || player.name}/32`} alt={player.name} />
                     <span>{player.name}</span>
                   </td>
 
@@ -96,7 +100,7 @@ function Leaderboard({ activeTab, players, onSelectPlayer }) {
 
                     <div className="mini-ranks">
                       {shownModes.map((mode) => (
-                        <RankBadge key={mode} rank={player.ranks[mode]} />
+                        <RankBadge key={mode} rank={player.ranks?.[mode]} />
                       ))}
                     </div>
                   </td>
@@ -108,6 +112,14 @@ function Leaderboard({ activeTab, players, onSelectPlayer }) {
                 </tr>
               );
             })}
+
+            {sortedPlayers.length === 0 && (
+              <tr>
+                <td colSpan="4" className="no-results">
+                  No players found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

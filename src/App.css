@@ -666,3 +666,39 @@ button {
   font-weight: 900;
   cursor: pointer;
 }
+/* ================= SEARCH ================= */
+
+.search-section {
+  width: min(1380px, calc(100% - 36px));
+  margin: 10px auto 12px;
+}
+
+.search-section input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  background: rgba(3, 10, 25, 0.82);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+  box-shadow: 0 0 24px rgba(0, 140, 255, 0.12);
+}
+
+.search-section input::placeholder {
+  color: #7f9db3;
+}
+
+.search-section input:focus {
+  border-color: rgba(0, 200, 255, 0.75);
+  box-shadow: 0 0 28px rgba(0, 200, 255, 0.22);
+}
+
+.no-results {
+  height: 90px;
+  text-align: center;
+  color: #8f98a5;
+  font-size: 16px;
+  font-weight: 800;
+}
