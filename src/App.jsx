@@ -14,6 +14,9 @@ function App() {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const showAdmin =
+    new URLSearchParams(window.location.search).get("admin") === "true";
+
   useEffect(() => {
     const playersRef = collection(db, "players");
 
@@ -38,7 +41,9 @@ function App() {
   return (
     <main className="app">
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <AdminPanel players={players} />
+
+      {showAdmin && <AdminPanel players={players} />}
+
       <Hero />
 
       <section className="search-section">
