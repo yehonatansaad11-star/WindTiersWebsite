@@ -11,7 +11,13 @@ const tabs = [
   "Spear Mace",
 ];
 
-function Navbar({ activeTab, setActiveTab }) {
+function Navbar({
+  activeTab,
+  setActiveTab,
+  user,
+  login,
+  logout,
+}) {
   return (
     <header className="navbar">
       <div className="navbar-brand">
@@ -31,6 +37,18 @@ function Navbar({ activeTab, setActiveTab }) {
           </button>
         ))}
       </nav>
+
+      <div className="navbar-user">
+        {!user ? (
+          <button className="login-btn" onClick={login}>
+            Login
+          </button>
+        ) : (
+          <button className="login-btn" onClick={logout}>
+            👤
+          </button>
+        )}
+      </div>
     </header>
   );
 }

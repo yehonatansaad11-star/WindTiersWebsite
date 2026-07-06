@@ -5,17 +5,29 @@ import Hero from "./components/Hero";
 import Leaderboard from "./components/Leaderboard";
 import AdminPanel from "./components/AdminPanel";
 import PlayerProfile from "./components/PlayerProfile";
-import { db } from "./firebase";
+
+import { db, auth, provider } from "./firebase";
 import { collection, onSnapshot } from "firebase/firestore";
+import {
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Overall");
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState(null);
 
-  const showAdmin =
-    new URLSearchParams(window.location.search).get("admin") === "true";
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
 
   useEffect(() => {
     const playersRef = collection(db, "players");
@@ -38,11 +50,30 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const login = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const logout = () => signOut(auth);
+
+  const isAdmin =
+    user?.email === "yehonatansaad11@gmail.com";
+
   return (
     <main className="app">
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+<Navbar
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+  user={user}
+  login={login}
+  logout={logout}
+/>
 
-      {showAdmin && <AdminPanel players={players} />}
+      {isAdmin && <AdminPanel players={players} />}
 
       <Hero />
 
